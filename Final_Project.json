@@ -1,0 +1,3611 @@
+{
+  "name": "Final_Project",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 3,
+              "unit": "minutes"
+            }
+          ]
+        },
+        "filters": {
+          "labelIds": [
+            "INBOX"
+          ],
+          "readStatus": "unread",
+          "sender": "lolo.hussien861@gmail.com"
+        }
+      },
+      "id": "0dfe2e84-fdf3-4a5f-bc7e-11f2b38af91a",
+      "name": "Gmail Trigger - New Emails",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -2816,
+        336
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "f9FjnoRdHWOUTCM7",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "confidenceThreshold",
+              "value": 0.7,
+              "type": "number"
+            },
+            {
+              "id": "id-2",
+              "name": "timeZone",
+              "value": "Africa/Cairo",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "emailSignature",
+              "value": "={{ \"Best regards,\\n\\nYour Assistant\" }}\n",
+              "type": "string"
+            },
+            {
+              "id": "id-4",
+              "name": "schedulingLink",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "6b86569e-6454-42f0-be2e-ead56a18d01a",
+      "name": "Workflow Configuration",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2592,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "messageId",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "sender",
+              "value": "={{ $json.From }}",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "senderEmail",
+              "value": "={{ $json.From.match(/<(.+)>/)?.[1] || $json.From }}",
+              "type": "string"
+            },
+            {
+              "id": "id-4",
+              "name": "subject",
+              "value": "={{ $json.Subject }}",
+              "type": "string"
+            },
+            {
+              "id": "id-5",
+              "name": "receivedDate",
+              "value": "={{ new Date(Number($json.internalDate)).toISOString() }}",
+              "type": "string"
+            },
+            {
+              "id": "id-6",
+              "name": "emailBody",
+              "value": "={{ $json.snippet }}",
+              "type": "string"
+            },
+            {
+              "id": "id-7",
+              "name": "threadId",
+              "value": "={{ $json.threadId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "d62e5a7a-ef1b-41ed-b30b-6aeae60684ed",
+      "name": "Extract Email Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -2368,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1V2dmoR4Yk2apkQuiCrwwTKsVZZO_ztBDXMCmVfbwxSc",
+          "mode": "list",
+          "cachedResultName": "logSheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V2dmoR4Yk2apkQuiCrwwTKsVZZO_ztBDXMCmVfbwxSc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V2dmoR4Yk2apkQuiCrwwTKsVZZO_ztBDXMCmVfbwxSc/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "messageId": "={{ $('Extract Email Data').last().json.messageId }}",
+            "sender": "={{ $('Extract Email Data').last().json.sender.split('<')[0] }}",
+            "senderEmail": "={{ $('Extract Email Data').last().json.senderEmail }}",
+            "subject": "={{ $('Extract Email Data').last().json.subject }}",
+            "receivedDate": "={{ new Date($('Extract Email Data').last().json.receivedDate).toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }) }}\n",
+            "emailBody": "=",
+            "threadId": "={{ $('Extract Email Data').last().json.threadId }}",
+            "id": "={{ $('Extract Email Data').last().json.id }}",
+            "snippet": "={{$('Extract Email Data').last().json.snippet }}",
+            "From": "={{ $('Extract Email Data').last().json.From }}",
+            "Subject": "={{ $('Extract Email Data').last().json.subject }}",
+            "To": "={{ $('Extract Email Data').last().json.To }}",
+            "confidenceThreshold": "={{ $('Extract Email Data').last().json.confidenceThreshold }}",
+            "timeZone": "={{ $('Extract Email Data').last().json.timeZone }}",
+            "schedulingLink": "={{ $('Extract Email Data').last().json.schedulingLink }}",
+            "isDuplicate": "={{ $json.isDuplicate }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "messageId",
+              "displayName": "messageId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "sender",
+              "displayName": "sender",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "senderEmail",
+              "displayName": "senderEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "receivedDate",
+              "displayName": "receivedDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "emailBody",
+              "displayName": "emailBody",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "threadId",
+              "displayName": "threadId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "responseType",
+              "displayName": "responseType",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "processedAt",
+              "displayName": "processedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "snippet",
+              "displayName": "snippet",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "From",
+              "displayName": "From",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Subject",
+              "displayName": "Subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "To",
+              "displayName": "To",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "confidenceThreshold",
+              "displayName": "confidenceThreshold",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "timeZone",
+              "displayName": "timeZone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "schedulingLink",
+              "displayName": "schedulingLink",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "isDuplicate",
+              "displayName": "isDuplicate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "confidence",
+              "displayName": "confidence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "alertType",
+              "displayName": "alertType",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "requiresReview",
+              "displayName": "requiresReview",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "reviewReason",
+              "displayName": "reviewReason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "fbea3490-18b2-47c0-9010-4afd027a3f41",
+      "name": "Log Email to Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1728,
+        464
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lRIPsFComz24vkHK",
+          "name": "Google Sheets account 11"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Extract Email Data').last().json.snippet }}",
+        "options": {
+          "systemMessage": "You are an email intent classifier. Analyze the email content and classify it into one of these categories:\n\n1. GENERAL_INQUIRY - General questions or information requests\n2. SUPPORT_REQUEST - Technical support or help needed\n3. MEETING_REQUEST - Request to schedule a meeting or appointment\n4. SPAM - Marketing, promotional, or spam content (NO automated response will be sent)\n5. OUT_OF_OFFICE - Auto-reply or out-of-office messages (NO automated response will be sent)\n\nProvide your response in JSON format with the following structure:\n{\n  \"intent\": \"CATEGORY_NAME\",\n  \"confidence\": 0.95,\n  \"reasoning\": \"Brief explanation of why this classification was chosen\"\n}\n\nThe confidence score should be between 0 and 1. If confidence is below 0.7, it should be flagged for manual review.\n\nIMPORTANT: SPAM and OUT_OF_OFFICE emails should be classified but will NOT receive automated responses."
+        }
+      },
+      "id": "ab7a290a-6ca2-4cd0-9c59-85a919ef510d",
+      "name": "AI Agent - Intent Classifier",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -1056,
+        432
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const aiResponse = $input.first().json.output;\nlet parsed;\n\ntry {\n  parsed = typeof aiResponse === 'string' ? JSON.parse(aiResponse) : aiResponse;\n} catch (e) {\n  const jsonMatch = aiResponse.match(/\\{[\\s\\S]*\\}/);\n  if (jsonMatch) {\n    parsed = JSON.parse(jsonMatch[0]);\n  } else {\n    parsed = {\n      intent: 'UNKNOWN',\n      confidence: 0.3,\n      reasoning: 'Failed to parse AI response'\n    };\n  }\n}\n\nreturn {\n  ...parsed,\n  originalEmail: $input.first().json\n};"
+      },
+      "id": "9dca8c80-68c2-4592-8945-03a0d2448619",
+      "name": "Parse AI Classification",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -704,
+        432
+      ],
+      "retryOnFail": true
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "id-1",
+                    "leftValue": "={{ $json.intent }}",
+                    "rightValue": "GENERAL_INQUIRY",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  },
+                  {
+                    "id": "id-2",
+                    "leftValue": "={{ $json.confidence }}",
+                    "rightValue": "={{ $('Workflow Configuration').first().json.confidenceThreshold }}",
+                    "operator": {
+                      "type": "number",
+                      "operation": "gte"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "General Inquiry"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "id-3",
+                    "leftValue": "={{ $json.intent }}",
+                    "rightValue": "SUPPORT_REQUEST",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  },
+                  {
+                    "id": "id-4",
+                    "leftValue": "={{ $json.confidence }}",
+                    "rightValue": "={{ $('Workflow Configuration').first().json.confidenceThreshold }}",
+                    "operator": {
+                      "type": "number",
+                      "operation": "gte"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Support Request"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "id-5",
+                    "leftValue": "={{ $json.intent }}",
+                    "rightValue": "MEETING_REQUEST",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  },
+                  {
+                    "id": "id-6",
+                    "leftValue": "={{ $json.confidence }}",
+                    "rightValue": "={{ $('Workflow Configuration').first().json.confidenceThreshold }}",
+                    "operator": {
+                      "type": "number",
+                      "operation": "gte"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Meeting Request"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "id-7",
+                    "leftValue": "={{ $json.intent }}",
+                    "rightValue": "SPAM",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  },
+                  {
+                    "id": "id-8",
+                    "leftValue": "={{ $json.confidence }}",
+                    "rightValue": "={{ $('Workflow Configuration').first().json.confidenceThreshold }}",
+                    "operator": {
+                      "type": "number",
+                      "operation": "gte"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "SPAM"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "id-9",
+                    "leftValue": "={{ $json.intent }}",
+                    "rightValue": "OUT_OF_OFFICE",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  },
+                  {
+                    "id": "id-10",
+                    "leftValue": "={{ $json.confidence }}",
+                    "rightValue": "={{ $('Workflow Configuration').first().json.confidenceThreshold }}",
+                    "operator": {
+                      "type": "number",
+                      "operation": "gte"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Out of Office"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "Low Confidence"
+        }
+      },
+      "id": "3a1c6f12-978f-4bca-b6db-08f715a9adc2",
+      "name": "Route by Intent",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -496,
+        368
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "emailTo",
+              "value": "={{ $('Get All Log Rows').last().json.senderEmail }}",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "emailSubject",
+              "value": "={{ $('Get row(s) in sheet').last().json.Subject }}",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "emailBody",
+              "value": "=Dear {{ $('Get row(s) in sheet').last().json.sender.split('<')[0].trim() }},\n\nThank you for reaching out. I've received your inquiry and will get back to you shortly with the information you requested.\n\n{{ $('Workflow Configuration').first().json.emailSignature }}",
+              "type": "string"
+            },
+            {
+              "id": "id-4",
+              "name": "replyToMessageId",
+              "value": "={{ $('Get row(s) in sheet').last().json.messageId }}",
+              "type": "string"
+            },
+            {
+              "id": "id-5",
+              "name": "responseType",
+              "value": "general_inquiry",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "204a0fb4-3b53-4c1e-a466-2c5509efba16",
+      "name": "Prepare General Inquiry Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        864,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "emailTo",
+              "value": "={{ $('Get row(s) in sheet').last().json.senderEmail }}",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "emailSubject",
+              "value": "={{ $('Get row(s) in sheet').last().json.subject }}",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "emailBody",
+              "value": "=Dear {{ $('Get row(s) in sheet').last().json.sender.split(\"<\")[0] }},\n\nThank you for contacting support. I've received your request and our team will investigate this issue.\n\nA support ticket has been created and you should receive a follow-up within 24 hours.\n\n{{ $('Workflow Configuration').first().json.emailSignature }}",
+              "type": "string"
+            },
+            {
+              "id": "id-4",
+              "name": "replyToMessageId",
+              "value": "={{ $('Get row(s) in sheet').last().json.messageId }}",
+              "type": "string"
+            },
+            {
+              "id": "id-5",
+              "name": "responseType",
+              "value": "support_request",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "ef1fb787-62bd-43dc-b07f-c97588927726",
+      "name": "Prepare Support Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        864,
+        816
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const emailBody = $('Extract Email Data').last().json.snippet || '';\nconst subject = $('Extract Email Data').last().json.subject || '';\nconst fullText = (subject + ' ' + emailBody).toLowerCase();\n\n// Regex patterns for date/time formats\nconst patterns = [\n  /\\d{4}-\\d{2}-\\d{2}\\s+\\d{1,2}:\\d{2}/,  // e.g. 2025-11-09 10:00\n  /(january|february|march|april|may|june|july|august|september|october|november|december)\\s+\\d{1,2},?\\s+\\d{4}\\s+at\\s+\\d{1,2}:\\d{2}\\s*(am|pm)?/, // November 12, 2025 at 10:00 AM\n  /(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\\.?\\s+\\d{1,2}\\s+at\\s+\\d{1,2}(:\\d{2})?\\s*(am|pm)?/, // Nov 12 at 10am\n  /(today|tomorrow|next\\s+(monday|tuesday|wednesday|thursday|friday|saturday|sunday))\\s+at\\s+\\d{1,2}(:\\d{2})?\\s*(am|pm)?/ // today, next Thursday etc.\n];\n\nlet extractedPhrase = null;\nfor (const pattern of patterns) {\n  const match = fullText.match(pattern);\n  if (match) {\n    extractedPhrase = match[0];\n    break;\n  }\n}\n\n// --- Helper: Convert to ISO string with Cairo timezone (+02:00)\nfunction toCairoISO(date) {\n  const offsetHours = 2; // Cairo = UTC+2\n  const localTime = new Date(date.getTime() + offsetHours * 60 * 60 * 1000);\n  return localTime.toISOString().replace(\"Z\", \"+02:00\");\n}\n\n// --- Helper: Parse natural language like \"today/tomorrow/next Thursday at 10 am\"\nfunction parseNaturalLanguage(phrase) {\n  if (!phrase) return null;\n\n  const now = new Date();\n  const lower = phrase.toLowerCase();\n  const days = [\"sunday\",\"monday\",\"tuesday\",\"wednesday\",\"thursday\",\"friday\",\"saturday\"];\n\n  let targetDate = new Date(now);\n\n  // \"today\"\n  if (lower.includes(\"today\")) {\n    targetDate.setDate(now.getDate());\n  } \n  // \"tomorrow\"\n  else if (lower.includes(\"tomorrow\")) {\n    targetDate.setDate(now.getDate() + 1);\n  } \n  // \"next <weekday>\"\n  else {\n    const match = lower.match(/next\\s+(monday|tuesday|wednesday|thursday|friday|saturday|sunday)/);\n    if (match) {\n      const targetDay = days.indexOf(match[1]);\n      const currentDay = now.getDay();\n      let diff = targetDay - currentDay;\n      if (diff <= 0) diff += 7;\n      targetDate.setDate(now.getDate() + diff);\n    }\n  }\n\n  // Extract time if available\n  const timeMatch = lower.match(/(\\d{1,2})(:(\\d{2}))?\\s*(am|pm)?/);\n  if (timeMatch) {\n    let hours = parseInt(timeMatch[1]);\n    const minutes = timeMatch[3] ? parseInt(timeMatch[3]) : 0;\n    const ampm = timeMatch[4];\n\n    if (ampm === \"pm\" && hours < 12) hours += 12;\n    if (ampm === \"am\" && hours === 12) hours = 0;\n\n    targetDate.setHours(hours, minutes, 0, 0);\n  } else {\n    targetDate.setHours(10, 0, 0, 0); // default 10:00\n  }\n\n  return targetDate;\n}\n\n// --- Main extraction logic\nlet extractedTime = null;\nif (extractedPhrase) {\n  try {\n    const parsed = new Date(extractedPhrase);\n    if (!isNaN(parsed)) {\n      extractedTime = toCairoISO(parsed);\n    } else {\n      const parsedNatural = parseNaturalLanguage(extractedPhrase);\n      extractedTime = parsedNatural ? toCairoISO(parsedNatural) : null;\n    }\n  } catch {\n    const parsedNatural = parseNaturalLanguage(extractedPhrase);\n    extractedTime = parsedNatural ? toCairoISO(parsedNatural) : null;\n  }\n}\n\n// --- Final Output\nreturn {\n  ...$input.first().json,\n  extractedPhrase,\n  extractedTime,\n  needsManualParsing: !extractedTime\n};\n"
+      },
+      "id": "fdcb9bff-13b2-48f0-88ea-4657ef0ef432",
+      "name": "Extract Meeting Time",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -256,
+        544
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "calendar": {
+          "__rl": true,
+          "value": "alaahussienfathy@gmail.com",
+          "mode": "list",
+          "cachedResultName": "alaahussienfathy@gmail.com"
+        },
+        "returnAll": true,
+        "timeMin": "={{ $json.extractedTime ? new Date($json.extractedTime).toISOString() : new Date().toISOString() }}",
+        "timeMax": "={{ $json.extractedTime ? new Date(new Date($json.extractedTime).getTime() + 3600000).toISOString() : new Date(Date.now() + 86400000).toISOString() }}",
+        "options": {
+          "timeZone": {
+            "__rl": true,
+            "mode": "id",
+            "value": "={{ $('Workflow Configuration').first().json.timeZone }}"
+          }
+        }
+      },
+      "id": "92175e68-cb66-46b7-901d-71a48fe15025",
+      "name": "Check Calendar Availability",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        -32,
+        544
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "EQnEgfY4gY7acKWV",
+          "name": "Google Calendar account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ Object.keys($input.first().json).length}}\n",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "id": "aedba3ce-6797-464b-8657-eb2d7889f050",
+      "name": "Is Time Available?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        160,
+        416
+      ],
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "alaahussienfathy@gmail.com",
+          "mode": "list",
+          "cachedResultName": "alaahussienfathy@gmail.com"
+        },
+        "start": "={{ $('Extract Meeting Time').item.json.extractedTime }}",
+        "end": "={{ new Date(new Date($('Extract Meeting Time').item.json.extractedTime).getTime() + 3600000).toISOString() }}",
+        "additionalFields": {
+          "attendees": [
+            "={{ $('Get row(s) in sheet').last().json.senderEmail }}"
+          ],
+          "conferenceDataUi": {
+            "conferenceDataValues": {
+              "conferenceSolution": "hangoutsMeet"
+            }
+          },
+          "description": "=Scheduled via email automation\n\nOriginal subject: {{ $('Get row(s) in sheet').last().json.subject }}",
+          "summary": "=Meeting with {{$('Get row(s) in sheet').last().json.sender .split('<')[0].trim() }}"
+        }
+      },
+      "id": "6b144093-3df2-446d-8432-09749985bd2d",
+      "name": "Create Calendar Event",
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        736,
+        400
+      ],
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "EQnEgfY4gY7acKWV",
+          "name": "Google Calendar account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "emailTo",
+              "value": "={{ $('Extract Email Data').last().json.senderEmail }}",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "emailSubject",
+              "value": "=Meeting Confirmed: {{ $('Extract Email Data').last().json.subject }}",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "emailBody",
+              "value": "=Dear {{ $('Extract Email Data').last().json.sender.split('<')[0].trim() }},\n\nGreat news! Your meeting has been confirmed. 🎉\n\n📅 Date & Time:\n{{ $('format time').item.json.formattedDate }}\n🔗 Meeting Link: \n{{ $('Create Calendar Event').last().json.hangoutLink || 'Will be provided separately' }}\n\nThe calendar invitation has been sent to your email. Please accept it to add the meeting to your calendar.\n\nLooking forward to speaking with you!\n\n{{ $('Workflow Configuration').first().json.emailSignature }}\n",
+              "type": "string"
+            },
+            {
+              "id": "id-4",
+              "name": "replyToMessageId",
+              "value": "={{ $('Extract Email Data').last().json.messageId }}",
+              "type": "string"
+            },
+            {
+              "id": "id-5",
+              "name": "responseType",
+              "value": "meeting_confirmed",
+              "type": "string"
+            },
+            {
+              "id": "id-6",
+              "name": "meetingLink",
+              "value": "={{ $('Create Calendar Event').last().json.hangoutLink }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "11399d61-9808-4245-90df-a33d2a31e73e",
+      "name": "Prepare Meeting Confirmation",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1712,
+        400
+      ],
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "emailTo",
+              "value": "={{ $('Extract Email Data').last().json.senderEmail }}",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "emailSubject",
+              "value": "=Re: {{ $('Extract Email Data').last().json.subject }}",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "emailBody",
+              "value": "=Dear {{ $('Extract Email Data').last().json.sender.split('<')[0].trim() }},\n\nThank you for your meeting request. Unfortunately, the requested time slot is not available.\n\nPlease suggest a few alternative times and I'll do my best to accommodate.\n\n{{ $('Workflow Configuration').first().json.emailSignature }}\n",
+              "type": "string"
+            },
+            {
+              "id": "id-4",
+              "name": "replyToMessageId",
+              "value": "={{ $('Extract Email Data').last().json.messageId }}",
+              "type": "string"
+            },
+            {
+              "id": "id-5",
+              "name": "responseType",
+              "value": "meeting_unavailable",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "11dff724-a912-46a6-839c-87271a410dc9",
+      "name": "Prepare Unavailable Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        848,
+        608
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Log Email to Sheet').last().json.From }}",
+        "subject": "={{ $('Log Email to Sheet').last().json.subject }}",
+        "emailType": "text",
+        "message": "={{ $json.emailBody }}",
+        "options": {
+          "appendAttribution": false,
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {
+                "property": "invite.ics"
+              }
+            ]
+          }
+        }
+      },
+      "id": "d5a1b4c1-0d15-43ce-b752-63c25ff8be7e",
+      "name": "Send Email Response",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2080,
+        496
+      ],
+      "webhookId": "9f385b52-1dd8-4365-928f-39fbf0bcefc9",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "f9FjnoRdHWOUTCM7",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1V2dmoR4Yk2apkQuiCrwwTKsVZZO_ztBDXMCmVfbwxSc",
+          "mode": "list",
+          "cachedResultName": "logSheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V2dmoR4Yk2apkQuiCrwwTKsVZZO_ztBDXMCmVfbwxSc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V2dmoR4Yk2apkQuiCrwwTKsVZZO_ztBDXMCmVfbwxSc/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "sender": "={{ $('Extract Email Data').last().json.sender.split('<')[0] }}",
+            "messageId": "={{ $('Extract Email Data').last().json.messageId }}",
+            "senderEmail": "={{ $('Extract Email Data').last().json.From }}",
+            "subject": "={{ $('Extract Email Data').last().json.Subject }}",
+            "emailBody": "={{ $json.emailBody }}",
+            "threadId": "={{ $('Extract Email Data').last().json.threadId }}",
+            "status": "completed",
+            "responseType": "={{ $json.responseType }}",
+            "processedAt": "={{ new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }) }}\n",
+            "receivedDate": "={{ $('Log Email to Sheet').last().json.receivedDate }}",
+            "id": "={{ $('Get row(s) in sheet').last().json.id }}",
+            "snippet": "={{ $('Get row(s) in sheet').last().json.snippet }}",
+            "From": "={{ $('Get row(s) in sheet').last().json.To }}",
+            "To": "={{ $('Get row(s) in sheet').last().json.From }}",
+            "Subject": "={{ $('Get row(s) in sheet').last().json.Subject }}",
+            "confidenceThreshold": "={{ $('Get row(s) in sheet').last().json.confidenceThreshold }}",
+            "timeZone": "={{ $('Get row(s) in sheet').last().json.timeZone }}",
+            "schedulingLink": "={{ $json.meetingLink }}",
+            "isDuplicate": "={{ $('Get row(s) in sheet').last().json.isDuplicate }}",
+            "confidence": "={{ $('Parse AI Classification').item.json.confidence }}"
+          },
+          "matchingColumns": [
+            "messageId"
+          ],
+          "schema": [
+            {
+              "id": "messageId",
+              "displayName": "messageId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "sender",
+              "displayName": "sender",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "senderEmail",
+              "displayName": "senderEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "receivedDate",
+              "displayName": "receivedDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "emailBody",
+              "displayName": "emailBody",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "threadId",
+              "displayName": "threadId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "responseType",
+              "displayName": "responseType",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "processedAt",
+              "displayName": "processedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "snippet",
+              "displayName": "snippet",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "From",
+              "displayName": "From",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Subject",
+              "displayName": "Subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "To",
+              "displayName": "To",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "confidenceThreshold",
+              "displayName": "confidenceThreshold",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "timeZone",
+              "displayName": "timeZone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "schedulingLink",
+              "displayName": "schedulingLink",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "isDuplicate",
+              "displayName": "isDuplicate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "confidence",
+              "displayName": "confidence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "alertType",
+              "displayName": "alertType",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "requiresReview",
+              "displayName": "requiresReview",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "reviewReason",
+              "displayName": "reviewReason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "labelIds",
+              "displayName": "labelIds",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "705edd4a-b90b-4d43-aefe-fdd75a446091",
+      "name": "Update Log with Status",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2048,
+        304
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lRIPsFComz24vkHK",
+          "name": "Google Sheets account 11"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C09S6SVPSV6",
+          "mode": "list",
+          "cachedResultName": "all-iti"
+        },
+        "text": "=✅ Email processed successfully\n\n*From:* {{ $('Extract Email Data').last().json.senderEmail }}\n*Subject:* {{ $('Extract Email Data').last().json.subject }}\n*Intent:* {{ $('Parse AI Classification').last().json.intent }}\n*Confidence:* {{ $('Parse AI Classification').last().json.confidence }}\n*Processed:* {{ new Date().toLocaleString('en-GB', { timeZone: 'Africa/Cairo', hour12: true }) }}\n",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "id": "7dca7505-c92d-4b60-8eed-23c1ba709999",
+      "name": "Send Slack Notification",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        2688,
+        672
+      ],
+      "webhookId": "f6c24da1-d7db-4900-b6c3-d5b91a8b78de",
+      "credentials": {
+        "slackApi": {
+          "id": "4yQSaGiv35FTqApV",
+          "name": "Slack account 6"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "alertType",
+              "value": "low_confidence",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "requiresReview",
+              "value": true,
+              "type": "boolean"
+            },
+            {
+              "id": "id-3",
+              "name": "reviewReason",
+              "value": "=Confidence score ({{ $json.confidence }}) below threshold",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "220d6547-6814-4906-9ef9-0bda83b28842",
+      "name": "Handle Low Confidence",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -256,
+        1008
+      ]
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C09S6SVPSV6",
+          "mode": "list",
+          "cachedResultName": "all-iti"
+        },
+        "text": "=⚠️ Manual Review Required\n\n*From:* {{ $('Extract Email Data').last().json.From }}\n*Subject:* {{ $('Extract Email Data').last().json.subject}}\n*Intent:* {{ $('Parse AI Classification').item.json.intent }}\n*Confidence:* {{ $json.confidence }}\n*Reason:* {{ $json.reviewReason }}\n\n*Email Body:*\n```{{ $('Extract Email Data').last().json.emailBody.substring(0, 500) }}...```\n\nPlease review and respond manually.",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "id": "87df3750-5cc5-45ed-b26f-61be5f4e8ccb",
+      "name": "Alert for Manual Review",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        208,
+        1008
+      ],
+      "webhookId": "de0071eb-4e8f-46e6-b738-2dd13d4c162e",
+      "credentials": {
+        "slackApi": {
+          "id": "4yQSaGiv35FTqApV",
+          "name": "Slack account 6"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "id": "fa3e6e4e-f3b3-45eb-af6e-a8dc29755359",
+      "name": "Skip Duplicate",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -1280,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "status",
+              "value": "spam_detected",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "responseType",
+              "value": "no_response",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "processedAt",
+              "value": "={{ new Date().toISOString() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "e9e5817a-5b96-4290-b801-1ffbe0374ee2",
+      "name": "Handle SPAM",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -256,
+        16
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "status",
+              "value": "out_of_office_detected",
+              "type": "string"
+            },
+            {
+              "id": "id-2",
+              "name": "responseType",
+              "value": "no_response",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "processedAt",
+              "value": "={{ new Date().toISOString() }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "3eb128d1-3474-4c70-acec-7f3fe45e5c52",
+      "name": "Handle Out-of-Office",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -240,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C09S6SVPSV6",
+          "mode": "list",
+          "cachedResultName": "all-iti"
+        },
+        "text": "=🚫 Email Classified as SPAM\n\n*From:* {{ $('Extract Email Data').last().json.senderEmail }}\n*Subject:* {{ $('Extract Email Data').last().json.subject }}\n*Intent:* {{ $('Parse AI Classification').item.json.intent }}\n*Confidence:* {{ $('Parse AI Classification').item.json.confidence }}\n*Processed:* {{ new Date().toLocaleString('en-GB', { timeZone: 'Africa/Cairo', hour12: true }) }}\n\n\nNo automated response sent.\n",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "id": "5523faa8-5811-45ab-a734-edbe76f65ce3",
+      "name": "Notify SPAM/OOO",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        256,
+        0
+      ],
+      "webhookId": "08e5c10e-0d3d-4af4-89fd-35b446a2e3d8",
+      "credentials": {
+        "slackApi": {
+          "id": "4yQSaGiv35FTqApV",
+          "name": "Slack account 6"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get calendar event data from previous node\nconst eventData = $input.first().json;\n\n// Helper function to format date for ICS (YYYYMMDDTHHMMSSZ)\nfunction formatICSDate(dateString) {\n  const date = new Date(dateString);\n  return date.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';\n}\n\n// Extract event details\nconst startTime = eventData.start?.dateTime || eventData.extractedTime;\nconst endTime = eventData.end?.dateTime || new Date(new Date(startTime).getTime() + 3600000).toISOString();\nconst summary = eventData.summary || `Meeting with ${$('Extract Email Data').first().json.sender.split('<')[0].trim()}`;\nconst description = eventData.description || 'Scheduled via email automation';\nconst location = eventData.hangoutLink || '';\nconst attendeeEmail = $('Extract Email Data').first().json.senderEmail;\nconst organizerEmail = 'alaahussienfathy@gmail.com';\n\n// Generate ICS file content\nconst icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//n8n Email Assistant//EN\nCALSCALE:GREGORIAN\nMETHOD:REQUEST\nBEGIN:VEVENT\nDTSTART:${formatICSDate(startTime)}\nDTEND:${formatICSDate(endTime)}\nDTSTAMP:${formatICSDate(new Date().toISOString())}\nUID:${eventData.id || Date.now()}@n8n-email-assistant\nSUMMARY:${summary}\nDESCRIPTION:${description.replace(/\\n/g, '\\\\n')}\nLOCATION:${location}\nORGANIZER;CN=Email Assistant:mailto:${organizerEmail}\nATTENDEE;CN=${attendeeEmail};RSVP=TRUE:mailto:${attendeeEmail}\nSTATUS:CONFIRMED\nSEQUENCE:0\nEND:VEVENT\nEND:VCALENDAR`;\n\n// Return a single item with binary property\nreturn [\n  {\n    json: {}, // or include eventData if needed\n    binary: {\n      'invite.ics': {\n        data: Buffer.from(icsContent).toString('base64'),\n        mimeType: 'text/calendar',\n        fileName: 'invite.ics',\n      },\n    },\n  },\n];\n"
+      },
+      "id": "c90c1442-3ab8-45de-a605-133b86a4fbc2",
+      "name": "Generate ICS File",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1248,
+        400
+      ],
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1V2dmoR4Yk2apkQuiCrwwTKsVZZO_ztBDXMCmVfbwxSc",
+          "mode": "list",
+          "cachedResultName": "logSheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V2dmoR4Yk2apkQuiCrwwTKsVZZO_ztBDXMCmVfbwxSc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V2dmoR4Yk2apkQuiCrwwTKsVZZO_ztBDXMCmVfbwxSc/edit#gid=0"
+        },
+        "options": {}
+      },
+      "id": "e7453def-97ac-45c0-9124-1ad995666cc7",
+      "name": "Get All Log Rows",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -2112,
+        160
+      ],
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lRIPsFComz24vkHK",
+          "name": "Google Sheets account 11"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Decide whether to append a new row or treat as duplicate by checking existing rows.\nconst sheetItems = $items(\"Get All Log Rows\") || [];\nlet rows = [];\nif (sheetItems && sheetItems.length) {\n  rows = sheetItems.map(i => i.json);\n}\nconst extractNode = $items(\"Extract Email Data\") && $items(\"Extract Email Data\")[0] ? $items(\"Extract Email Data\")[0].json : $json;\nconst newMessageId = (extractNode && extractNode.messageId) ? String(extractNode.messageId).trim() : null;\nif (!rows.length) {\n  return [{ shouldAppend: true, isDuplicate: false, matchedRowIndex: null }];\n}\nlet foundIndex = null;\nfor (let i = 0; i < rows.length; i++) {\n  const r = rows[i];\n  const possibleIds = [r.messageId, r['messageId'], r['Message-ID'], r['id'], r['messageId_1']];\n  if (possibleIds.some(val => val && String(val).trim() === String(newMessageId).trim())) {\n    foundIndex = i;\n    break;\n  }\n}\nif (foundIndex !== null) {\n  return [{ shouldAppend: false, isDuplicate: true, matchedRowIndex: foundIndex }];\n} else {\n  return [{ shouldAppend: true, isDuplicate: false, matchedRowIndex: null }];\n}\n"
+      },
+      "id": "cc58cac1-5a44-460e-8594-3942840b24c7",
+      "name": "Decide Append or Update",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1856,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cdcd47b7-234c-4a3c-a4bc-c672da152b5f",
+              "leftValue": "={{ $json.shouldAppend.toString() }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1616,
+        160
+      ],
+      "id": "9b0ec2fa-2c9b-4b00-aa47-7381053172d0",
+      "name": "Check Duplicate"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1V2dmoR4Yk2apkQuiCrwwTKsVZZO_ztBDXMCmVfbwxSc",
+          "mode": "list",
+          "cachedResultName": "logSheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V2dmoR4Yk2apkQuiCrwwTKsVZZO_ztBDXMCmVfbwxSc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V2dmoR4Yk2apkQuiCrwwTKsVZZO_ztBDXMCmVfbwxSc/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1312,
+        464
+      ],
+      "id": "f42ee3fd-7faa-4291-8e8b-6d52923b5c59",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lRIPsFComz24vkHK",
+          "name": "Google Sheets account 11"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Log Email to Sheet').last().json.From }}",
+        "subject": "={{ $json.subject }}",
+        "emailType": "text",
+        "message": "={{ $json.emailBody }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2192,
+        880
+      ],
+      "id": "e6ad53eb-d66e-4882-b5ea-e7bb61b169f7",
+      "name": "Send a message",
+      "webhookId": "641428f7-cd23-4dc8-902a-406ece53d68f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "f9FjnoRdHWOUTCM7",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1V2dmoR4Yk2apkQuiCrwwTKsVZZO_ztBDXMCmVfbwxSc",
+          "mode": "list",
+          "cachedResultName": "logSheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V2dmoR4Yk2apkQuiCrwwTKsVZZO_ztBDXMCmVfbwxSc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V2dmoR4Yk2apkQuiCrwwTKsVZZO_ztBDXMCmVfbwxSc/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "sender": "={{ $('Extract Email Data').last().json.sender.split('<')[0] }}",
+            "messageId": "={{ $('Extract Email Data').last().json.messageId }}",
+            "senderEmail": "={{ $('Extract Email Data').last().json.From }}",
+            "subject": "={{ $('Extract Email Data').last().json.Subject }}",
+            "emailBody": "={{ $json.emailBody }}",
+            "threadId": "={{ $('Extract Email Data').last().json.threadId }}",
+            "status": "completed",
+            "responseType": "={{ $json.responseType}}",
+            "processedAt": "={{ new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }) }}\n",
+            "receivedDate": "={{ $('Log Email to Sheet').last().json.receivedDate }}",
+            "id": "={{ $('Get row(s) in sheet').last().json.id }}",
+            "snippet": "={{ $('Get row(s) in sheet').last().json.snippet }}",
+            "From": "={{ $('Get row(s) in sheet').last().json.To }}",
+            "To": "={{ $('Get row(s) in sheet').last().json.From }}",
+            "Subject": "={{ $('Get row(s) in sheet').last().json.Subject }}",
+            "confidenceThreshold": "={{ $('Get row(s) in sheet').last().json.confidenceThreshold }}",
+            "timeZone": "={{ $('Get row(s) in sheet').last().json.timeZone }}",
+            "schedulingLink": "=",
+            "isDuplicate": "={{ $('Get row(s) in sheet').last().json.isDuplicate }}",
+            "confidence": "={{ $('Parse AI Classification').item.json.confidence }}"
+          },
+          "matchingColumns": [
+            "messageId"
+          ],
+          "schema": [
+            {
+              "id": "messageId",
+              "displayName": "messageId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "sender",
+              "displayName": "sender",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "senderEmail",
+              "displayName": "senderEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "receivedDate",
+              "displayName": "receivedDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "emailBody",
+              "displayName": "emailBody",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "threadId",
+              "displayName": "threadId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "responseType",
+              "displayName": "responseType",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "processedAt",
+              "displayName": "processedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "snippet",
+              "displayName": "snippet",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "From",
+              "displayName": "From",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Subject",
+              "displayName": "Subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "To",
+              "displayName": "To",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "confidenceThreshold",
+              "displayName": "confidenceThreshold",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "timeZone",
+              "displayName": "timeZone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "schedulingLink",
+              "displayName": "schedulingLink",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "isDuplicate",
+              "displayName": "isDuplicate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "confidence",
+              "displayName": "confidence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "alertType",
+              "displayName": "alertType",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "requiresReview",
+              "displayName": "requiresReview",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "reviewReason",
+              "displayName": "reviewReason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "labelIds",
+              "displayName": "labelIds",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "f71dbabf-88b2-4263-92d2-1414fc38c50c",
+      "name": "Update Log with Status1",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1824,
+        672
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lRIPsFComz24vkHK",
+          "name": "Google Sheets account 11"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1V2dmoR4Yk2apkQuiCrwwTKsVZZO_ztBDXMCmVfbwxSc",
+          "mode": "list",
+          "cachedResultName": "logSheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V2dmoR4Yk2apkQuiCrwwTKsVZZO_ztBDXMCmVfbwxSc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V2dmoR4Yk2apkQuiCrwwTKsVZZO_ztBDXMCmVfbwxSc/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "sender": "={{ $('Extract Email Data').last().json.sender.split('<')[0] }}",
+            "messageId": "={{ $('Extract Email Data').last().json.messageId }}",
+            "senderEmail": "={{ $('Extract Email Data').last().json.From }}",
+            "subject": "={{ $('Extract Email Data').last().json.Subject }}",
+            "emailBody": "={{ $json.emailBody }}",
+            "threadId": "={{ $('Extract Email Data').last().json.threadId }}",
+            "status": "completed",
+            "responseType": "={{ $json.responseType }}",
+            "processedAt": "={{ new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }) }}\n",
+            "receivedDate": "={{ $('Log Email to Sheet').last().json.receivedDate }}",
+            "id": "={{ $('Get row(s) in sheet').last().json.id }}",
+            "snippet": "={{ $('Get row(s) in sheet').last().json.snippet }}",
+            "From": "={{ $('Get row(s) in sheet').last().json.To }}",
+            "To": "={{ $('Get row(s) in sheet').last().json.From }}",
+            "Subject": "={{ $('Get row(s) in sheet').last().json.Subject }}",
+            "confidenceThreshold": "={{ $('Get row(s) in sheet').last().json.confidenceThreshold }}",
+            "timeZone": "={{ $('Get row(s) in sheet').last().json.timeZone }}",
+            "schedulingLink": "=",
+            "isDuplicate": "={{ $('Get row(s) in sheet').last().json.isDuplicate }}",
+            "confidence": "={{ $('Parse AI Classification').item.json.confidence }}"
+          },
+          "matchingColumns": [
+            "messageId"
+          ],
+          "schema": [
+            {
+              "id": "messageId",
+              "displayName": "messageId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "sender",
+              "displayName": "sender",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "senderEmail",
+              "displayName": "senderEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "receivedDate",
+              "displayName": "receivedDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "emailBody",
+              "displayName": "emailBody",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "threadId",
+              "displayName": "threadId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "responseType",
+              "displayName": "responseType",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "processedAt",
+              "displayName": "processedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "snippet",
+              "displayName": "snippet",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "From",
+              "displayName": "From",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Subject",
+              "displayName": "Subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "To",
+              "displayName": "To",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "confidenceThreshold",
+              "displayName": "confidenceThreshold",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "timeZone",
+              "displayName": "timeZone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "schedulingLink",
+              "displayName": "schedulingLink",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "isDuplicate",
+              "displayName": "isDuplicate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "confidence",
+              "displayName": "confidence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "alertType",
+              "displayName": "alertType",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "requiresReview",
+              "displayName": "requiresReview",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "reviewReason",
+              "displayName": "reviewReason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "labelIds",
+              "displayName": "labelIds",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "5e438a28-3eec-4fc8-8f59-693eda59965c",
+      "name": "Update Log with Status2",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1824,
+        928
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lRIPsFComz24vkHK",
+          "name": "Google Sheets account 11"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1V2dmoR4Yk2apkQuiCrwwTKsVZZO_ztBDXMCmVfbwxSc",
+          "mode": "list",
+          "cachedResultName": "logSheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V2dmoR4Yk2apkQuiCrwwTKsVZZO_ztBDXMCmVfbwxSc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V2dmoR4Yk2apkQuiCrwwTKsVZZO_ztBDXMCmVfbwxSc/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "sender": "={{ $('Extract Email Data').last().json.sender.split('<')[0] }}",
+            "messageId": "={{ $('Extract Email Data').last().json.messageId }}",
+            "senderEmail": "={{ $('Extract Email Data').last().json.From }}",
+            "subject": "={{ $('Extract Email Data').last().json.Subject }}",
+            "emailBody": "={{ $json.emailBody }}",
+            "threadId": "={{ $('Extract Email Data').last().json.threadId }}",
+            "status": "completed",
+            "responseType": "={{ $json.responseType }}",
+            "processedAt": "={{ new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }) }}\n",
+            "receivedDate": "={{ $('Log Email to Sheet').last().json.receivedDate }}",
+            "id": "={{ $('Get row(s) in sheet').last().json.id }}",
+            "snippet": "={{ $('Get row(s) in sheet').last().json.snippet }}",
+            "From": "={{ $('Get row(s) in sheet').last().json.To }}",
+            "To": "={{ $('Get row(s) in sheet').last().json.From }}",
+            "Subject": "={{ $('Get row(s) in sheet').last().json.Subject }}",
+            "confidenceThreshold": "={{ $('Get row(s) in sheet').last().json.confidenceThreshold }}",
+            "timeZone": "={{ $('Get row(s) in sheet').last().json.timeZone }}",
+            "schedulingLink": "=",
+            "isDuplicate": "={{ $('Get row(s) in sheet').last().json.isDuplicate }}",
+            "confidence": "={{ $json.confidence }}"
+          },
+          "matchingColumns": [
+            "messageId"
+          ],
+          "schema": [
+            {
+              "id": "messageId",
+              "displayName": "messageId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "sender",
+              "displayName": "sender",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "senderEmail",
+              "displayName": "senderEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "receivedDate",
+              "displayName": "receivedDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "emailBody",
+              "displayName": "emailBody",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "threadId",
+              "displayName": "threadId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "responseType",
+              "displayName": "responseType",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "processedAt",
+              "displayName": "processedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "snippet",
+              "displayName": "snippet",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "From",
+              "displayName": "From",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Subject",
+              "displayName": "Subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "To",
+              "displayName": "To",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "confidenceThreshold",
+              "displayName": "confidenceThreshold",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "timeZone",
+              "displayName": "timeZone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "schedulingLink",
+              "displayName": "schedulingLink",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "isDuplicate",
+              "displayName": "isDuplicate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "confidence",
+              "displayName": "confidence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "alertType",
+              "displayName": "alertType",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "requiresReview",
+              "displayName": "requiresReview",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "reviewReason",
+              "displayName": "reviewReason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "labelIds",
+              "displayName": "labelIds",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "94bea16f-8a2a-43a9-a5c5-26a71a8e0fb3",
+      "name": "Update Log with Status3",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1840,
+        1168
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lRIPsFComz24vkHK",
+          "name": "Google Sheets account 11"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1V2dmoR4Yk2apkQuiCrwwTKsVZZO_ztBDXMCmVfbwxSc",
+          "mode": "list",
+          "cachedResultName": "logSheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V2dmoR4Yk2apkQuiCrwwTKsVZZO_ztBDXMCmVfbwxSc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V2dmoR4Yk2apkQuiCrwwTKsVZZO_ztBDXMCmVfbwxSc/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "sender": "={{ $('Extract Email Data').last().json.sender.split('<')[0] }}",
+            "messageId": "={{ $('Extract Email Data').last().json.messageId }}",
+            "senderEmail": "={{ $('Extract Email Data').last().json.From }}",
+            "subject": "={{ $('Extract Email Data').last().json.Subject }}",
+            "emailBody": "={{ $json.emailBody }}",
+            "threadId": "={{ $('Extract Email Data').last().json.threadId }}",
+            "status": "completed",
+            "responseType": "={{ $json.responseType }}",
+            "processedAt": "={{ new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }) }}\n",
+            "receivedDate": "={{ $('Log Email to Sheet').last().json.receivedDate }}",
+            "id": "={{ $('Get row(s) in sheet').last().json.id }}",
+            "snippet": "={{ $('Get row(s) in sheet').last().json.snippet }}",
+            "From": "={{ $('Get row(s) in sheet').last().json.To }}",
+            "To": "={{ $('Get row(s) in sheet').last().json.From }}",
+            "Subject": "={{ $('Get row(s) in sheet').last().json.Subject }}",
+            "confidenceThreshold": "={{ $('Get row(s) in sheet').last().json.confidenceThreshold }}",
+            "timeZone": "={{ $('Get row(s) in sheet').last().json.timeZone }}",
+            "schedulingLink": "=",
+            "isDuplicate": "={{ $('Get row(s) in sheet').last().json.isDuplicate }}",
+            "confidence": "={{ $('Parse AI Classification').item.json.confidence }}"
+          },
+          "matchingColumns": [
+            "messageId"
+          ],
+          "schema": [
+            {
+              "id": "messageId",
+              "displayName": "messageId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "sender",
+              "displayName": "sender",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "senderEmail",
+              "displayName": "senderEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "receivedDate",
+              "displayName": "receivedDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "emailBody",
+              "displayName": "emailBody",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "threadId",
+              "displayName": "threadId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "responseType",
+              "displayName": "responseType",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "processedAt",
+              "displayName": "processedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "snippet",
+              "displayName": "snippet",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "From",
+              "displayName": "From",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Subject",
+              "displayName": "Subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "To",
+              "displayName": "To",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "confidenceThreshold",
+              "displayName": "confidenceThreshold",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "timeZone",
+              "displayName": "timeZone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "schedulingLink",
+              "displayName": "schedulingLink",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "isDuplicate",
+              "displayName": "isDuplicate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "confidence",
+              "displayName": "confidence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "alertType",
+              "displayName": "alertType",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "requiresReview",
+              "displayName": "requiresReview",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "reviewReason",
+              "displayName": "reviewReason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "43ca1cff-4384-457a-a776-046d8f384851",
+      "name": "Log Spam/OOO To Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        0,
+        0
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lRIPsFComz24vkHK",
+          "name": "Google Sheets account 11"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1V2dmoR4Yk2apkQuiCrwwTKsVZZO_ztBDXMCmVfbwxSc",
+          "mode": "list",
+          "cachedResultName": "logSheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V2dmoR4Yk2apkQuiCrwwTKsVZZO_ztBDXMCmVfbwxSc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1V2dmoR4Yk2apkQuiCrwwTKsVZZO_ztBDXMCmVfbwxSc/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "sender": "={{ $('Extract Email Data').last().json.sender.split('<')[0] }}",
+            "messageId": "={{ $('Extract Email Data').last().json.messageId }}",
+            "senderEmail": "={{ $('Extract Email Data').last().json.From }}",
+            "subject": "={{ $('Extract Email Data').last().json.Subject }}",
+            "emailBody": "={{ $json.emailBody }}",
+            "threadId": "={{ $('Extract Email Data').last().json.threadId }}",
+            "status": "completed",
+            "responseType": "={{ $json.responseType }}",
+            "processedAt": "={{ new Date().toLocaleString('en-EG', { timeZone: 'Africa/Cairo' }) }}\n",
+            "receivedDate": "={{ $('Log Email to Sheet').last().json.receivedDate }}",
+            "id": "={{ $('Get row(s) in sheet').last().json.id }}",
+            "snippet": "={{ $('Get row(s) in sheet').last().json.snippet }}",
+            "From": "={{ $('Get row(s) in sheet').last().json.To }}",
+            "To": "={{ $('Get row(s) in sheet').last().json.From }}",
+            "Subject": "={{ $('Get row(s) in sheet').last().json.Subject }}",
+            "confidenceThreshold": "={{ $('Get row(s) in sheet').last().json.confidenceThreshold }}",
+            "timeZone": "={{ $('Get row(s) in sheet').last().json.timeZone }}",
+            "schedulingLink": "=",
+            "isDuplicate": "={{ $('Get row(s) in sheet').last().json.isDuplicate }}",
+            "confidence": "={{ $json.confidence }}",
+            "alertType": "={{ $json.alertType }}",
+            "requiresReview": "={{ $json.requiresReview }}",
+            "reviewReason": "={{ $json.reviewReason }}"
+          },
+          "matchingColumns": [
+            "messageId"
+          ],
+          "schema": [
+            {
+              "id": "messageId",
+              "displayName": "messageId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "sender",
+              "displayName": "sender",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "senderEmail",
+              "displayName": "senderEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "receivedDate",
+              "displayName": "receivedDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "emailBody",
+              "displayName": "emailBody",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "threadId",
+              "displayName": "threadId",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "responseType",
+              "displayName": "responseType",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "processedAt",
+              "displayName": "processedAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "snippet",
+              "displayName": "snippet",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "From",
+              "displayName": "From",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Subject",
+              "displayName": "Subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "To",
+              "displayName": "To",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "confidenceThreshold",
+              "displayName": "confidenceThreshold",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "timeZone",
+              "displayName": "timeZone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "schedulingLink",
+              "displayName": "schedulingLink",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "isDuplicate",
+              "displayName": "isDuplicate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "confidence",
+              "displayName": "confidence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "alertType",
+              "displayName": "alertType",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "requiresReview",
+              "displayName": "requiresReview",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "reviewReason",
+              "displayName": "reviewReason",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "labelIds",
+              "displayName": "labelIds",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "f884c299-546c-47dc-8870-8ad3721d4735",
+      "name": "Log Low Confidence To Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -16,
+        1008
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lRIPsFComz24vkHK",
+          "name": "Google Sheets account 11"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama3.2:1b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        -1056,
+        688
+      ],
+      "id": "2c98885c-ad2d-4d01-aa08-2306a00d59be",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "NeFzC4L9dN4qSWMv",
+          "name": "Ollama account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Try to find the start time safely\nconst eventData = $json;\n\nconst startTime =\n  eventData.start?.dateTime ||\n  eventData.extractedTime ||\n  eventData.start ||\n  new Date().toISOString();\n\nconst timeZone =\n  $('Workflow Configuration').first()?.json?.timeZone || 'Africa/Cairo';\n\n// Format the date safely\nconst formattedDate = new Date(startTime).toLocaleString('en-US', {\n  timeZone,\n  hour12: true,\n});\n\nreturn {\n  json: {\n    ...eventData,\n    formattedDate,\n  },\n};\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        944,
+        400
+      ],
+      "id": "aacc3802-cc0f-4f30-97e3-c9cd03e05c06",
+      "name": "format time"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger - New Emails": {
+      "main": [
+        [
+          {
+            "node": "Workflow Configuration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Workflow Configuration": {
+      "main": [
+        [
+          {
+            "node": "Extract Email Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Email to Sheet": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent - Intent Classifier": {
+      "main": [
+        [
+          {
+            "node": "Parse AI Classification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse AI Classification": {
+      "main": [
+        [
+          {
+            "node": "Route by Intent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by Intent": {
+      "main": [
+        [
+          {
+            "node": "Prepare General Inquiry Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prepare Support Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extract Meeting Time",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Handle SPAM",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Handle Out-of-Office",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Handle Low Confidence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Meeting Time": {
+      "main": [
+        [
+          {
+            "node": "Check Calendar Availability",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Calendar Availability": {
+      "main": [
+        [
+          {
+            "node": "Is Time Available?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Time Available?": {
+      "main": [
+        [
+          {
+            "node": "Create Calendar Event",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Prepare Unavailable Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Calendar Event": {
+      "main": [
+        [
+          {
+            "node": "format time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare General Inquiry Response": {
+      "main": [
+        [
+          {
+            "node": "Update Log with Status1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Support Response": {
+      "main": [
+        [
+          {
+            "node": "Update Log with Status3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Meeting Confirmation": {
+      "main": [
+        [
+          {
+            "node": "Update Log with Status",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send Email Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Unavailable Response": {
+      "main": [
+        [
+          {
+            "node": "Update Log with Status2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email Response": {
+      "main": [
+        [
+          {
+            "node": "Send Slack Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Handle Low Confidence": {
+      "main": [
+        [
+          {
+            "node": "Log Low Confidence To Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Email Data": {
+      "main": [
+        [
+          {
+            "node": "Get All Log Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Handle SPAM": {
+      "main": [
+        [
+          {
+            "node": "Log Spam/OOO To Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Handle Out-of-Office": {
+      "main": [
+        [
+          {
+            "node": "Log Spam/OOO To Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate ICS File": {
+      "main": [
+        [
+          {
+            "node": "Prepare Meeting Confirmation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Log Rows": {
+      "main": [
+        [
+          {
+            "node": "Decide Append or Update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Decide Append or Update": {
+      "main": [
+        [
+          {
+            "node": "Check Duplicate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Duplicate": {
+      "main": [
+        [
+          {
+            "node": "Log Email to Sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Skip Duplicate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "AI Agent - Intent Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Send Slack Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Log with Status1": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Log with Status2": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Log with Status3": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Spam/OOO To Sheet": {
+      "main": [
+        [
+          {
+            "node": "Notify SPAM/OOO",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log Low Confidence To Sheet": {
+      "main": [
+        [
+          {
+            "node": "Alert for Manual Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent - Intent Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "format time": {
+      "main": [
+        [
+          {
+            "node": "Generate ICS File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "83d1b1f2-6923-44dc-be0c-06b196d77700",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "39c8ed5cfc8d524d640500a1ac92a6ede7da8c0190111dcc6c0184b7980bff26"
+  },
+  "id": "A8AHvyqc74fwCuXS",
+  "tags": []
+}
