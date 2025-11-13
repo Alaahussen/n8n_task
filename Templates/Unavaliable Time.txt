@@ -1,0 +1,8 @@
+Dear [sender],
+Thank you for your meeting request. Unfortunately, the requested time slot is not available.
+
+Please suggest a few alternative times and I'll do my best to accommodate.
+
+Best regards,
+
+Your Assistant
