@@ -32,7 +32,7 @@
 9. Template examples and test emails
 10. Logs & Auditing (Google Sheets schema)
 11. Troubleshooting & FAQ
-12. Security & Privacy
+12. live demo
 
 ---
 
@@ -340,11 +340,8 @@ Use `Append` operation in n8n to add rows after each main action.
 
 ---
 
-## 12. Security & Privacy
+## 12. Live Demo
 
-* Store OAuth client secrets and tokens in n8n credentials (not in plaintext files). Use a secret manager if available.
-* Limit network exposure: keep Ollama and n8n behind a firewall, use HTTPS for n8n, and restrict access with basic auth.
-* Logging: Do not store sensitive attachments or PII in plaintext logs. If necessary, redact or hash values in the audit sheet.
 
 ---
 
