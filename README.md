@@ -342,6 +342,8 @@ Use `Append` operation in n8n to add rows after each main action.
 
 ## 12. Live Demo
 
+https://github.com/user-attachments/assets/c57ed57c-52f6-4dc3-8709-9e36a83435d6
+
 
 ---
 
