@@ -31,8 +31,7 @@
    * Confidence threshold and manual review
 9. Template examples and test emails
 10. Logs & Auditing (Google Sheets schema)
-11. Troubleshooting & FAQ
-12. live demo
+11. live demo
 
 ---
 
@@ -103,8 +102,6 @@ Create and store these credentials securely (use a secrets manager or n8n creden
   * `https://www.googleapis.com/auth/calendar` (create/update events)
   * `https://www.googleapis.com/auth/spreadsheets` (write logs)
 
-> **Note:** For production with many external users you must verify the OAuth consent screen which may take time. For small-scale testing, add accounts as test users.
-
 ### Slack
 
 * Create Slack App in your workspace
@@ -144,10 +141,7 @@ ollama run llama-3.2-1b --prompt "Hello" --json
 
 **How n8n connects to Ollama:**
 
-* Option A: Run Ollama locally and use `ollama serve` (if available) to expose a local HTTP endpoint that n8n can call.
-* Option B: Execute the Ollama CLI from n8n via an `Execute Command` node (less recommended for concurrency).
-
-> Important: Keep Ollama accessible only from the host or via secure network.
+* n8n connects to Ollama via its local HTTP endpoint: run `ollama serve` and use `url=http://localhost:11434` (or your local host URL) for n8n to call.
 
 ### 5.4 Google Workspace Setup (Gmail, Calendar, Sheets)
 
@@ -184,7 +178,7 @@ OLLAMA_PORT=11434
 
 Nodes (high-level):
 
-1. **Trigger**: Gmail Trigger (new email) 
+1. **Trigger**: Start the workflow when a **new email arrives** (Gmail Trigger) or at a **set interval** (Schedule Trigger) to check emails regularly.
 2. **Get Email**: Gmail node to fetch full message (headers, body, attachments)
 3. **Preprocess**: Transform text, strip signatures, extract sender, subject, dates
 4. **Classifier**: HTTP Request to Ollama API or Execute Command to run local model with prompt
@@ -194,7 +188,7 @@ Nodes (high-level):
    * `SPAM` & `OUT_OF_OFFICE`: Log only. 
    * `GENERAL_INQUIRY` or `SUPPORT_REQUEST`: Use a Templates node or call an AI assistant to produce a reply. Then `Send Email (Gmail)`.
    * `MEETING_REQUEST`: Create ICS + Google Calendar event, attach ICS to response, send email reply.
-7. **Logging**: Append a row to Google Sheet with event details, classification, confidence, timestamps, messageId, actionTaken, and actor.
+7. **Logging**: Append a row to Google Sheet with event details, classification, confidence, receivedDate, messageId, actionTaken, and sender.
 8. **Slack Notification**: Post a short summary to a channel.
 9. **Manual Review Queue**: If `confidence < 0.7`, create a task in a `manual_review` sheet or queue and optionally notify a human.
 
@@ -246,11 +240,10 @@ IMPORTANT: SPAM and OUT_OF_OFFICE emails should be classified but will NOT recei
 
 Create a folder called `/templates` containing response templates for each intent. Example templates:
 
-* `general_inquiry.md` — polite acknowledgement and next steps
-* `support_request.md` — request more info and provide troubleshooting steps
-* `meeting_request.md` — propose times / accept + create calendar event
+* `general_inquiry.txt` — polite acknowledgement and next steps
+* `support_request.txt` — request more info and provide troubleshooting steps
+* `meeting_request.txt` — propose times / accept + create calendar event
 * `spam.txt` — optionally automated label/archival rule but no reply
-* `out_of_office.txt` — label and log only
 
 ### Example templates (short)
 
@@ -259,13 +252,11 @@ Create a folder called `/templates` containing response templates for each inten
 ```
 Subject: Re: {{subject}}
 
-Hello {{sender_name}},
+Dear {{sender_name}},
 
-Thanks for reaching out about {{topic}}. I'd be happy to help. Could you please provide:
-- More detail about X
-- Any files or screenshots
-
-Once I have that, I'll get back with recommended next steps.
+Thank you for reaching out. 
+I've received your inquiry and will get back to you shortly with the information you requested.
+Best regards,
 
 Best,
 Alaa Hussien
@@ -288,11 +279,10 @@ Alaa
 
 Include a `/test-emails` folder with these samples (use for training & QA):
 
-* `meeting-request-1.eml` — from Sara Ahmed proposing Monday Nov 17 12:00-13:00 Cairo
-* `spam-marketing-1.eml` — promotional email promising sales boost
-* `general-inquiry-1.eml` — Omar Khaled asking about image classification services
-* `support-request-1.eml` — a user reporting an error and logs attached
-* `out_of_office-1.eml` — automatic OOO reply
+* `Meeting Request.txt` — from Sara Ahmed proposing Monday Nov 17 12:00-13:00 Cairo
+* `Spam Marketing.txt` — promotional email promising sales boost
+* `General Inquiry.txt` — Omar Khaled asking about image classification services
+* `Support Request.txt` — a user reporting an error and logs attached
 
 (You can use the sample emails we prepared earlier.)
 
@@ -302,41 +292,36 @@ Include a `/test-emails` folder with these samples (use for training & QA):
 
 Create a Google Sheet with a tab `audit_logs` and columns:
 
-* `recevid date` (ISO 8601)
-* `message_id`
-* `from_email`
-* `subject`
-* `intent`
-* `confidence`
-* `action_taken` (e.g., `replied`, `scheduled_event`, `logged_only`)
-* `slack_ts` (if posted)
-* `notes`
+# Email Processing Fields
+
+- **`received_date`** (ISO 8601) – Timestamp when the email was received  
+- **`message_id`** – Unique ID of the email  
+- **`from_email`** – Sender's email address  
+- **`subject`** – Email subject line  
+- **`intent`** – Classified email intent (e.g., GENERAL_INQUIRY, SUPPORT_REQUEST, MEETING_REQUEST, SPAM, OUT_OF_OFFICE)  
+- **`confidence`** – Confidence score of the classification (0–1)  
+- **`responseType`** – Action taken on the email (e.g., `replied`, `scheduled_event`, `logged_only`)  
+
+# Optional / Additional Fields
+
+- **`sender`** – Name of the sender  
+- **`emailBody`** – Full email content  
+- **`threadId`** – Email thread identifier  
+- **`status`** – Current processing status (e.g., processed, pending)  
+- **`processedAt`** – Timestamp when email was processed  
+- **`snippet`** – Short preview of the email body  
+- **`To`** – Recipient email address  
+- **`confidenceThreshold`** – Threshold for automatic response  
+- **`timeZone`** – Time zone for scheduling events  
+- **`schedulingLink`** – Calendar or meeting link if scheduled  
+- **`isDuplicate`** – Flag indicating if email was already processed  
+- **`alertType`** – Any alerts triggered  
+- **`requiresReview`** – Flag for manual review  
+- **`reviewReason`** – Reason for requiring manual review  
+- **`id`** – Internal workflow ID
+
 
 Use `Append` operation in n8n to add rows after each main action.
-
----
-
-## 11. Troubleshooting & FAQ
-
-**Q: Classifier returns invalid JSON**
-
-* A: Implement a safe JSON extraction step: strip non-JSON before parsing, or use a regex to find the first `{ ... }`. If still invalid, send the email to manual review and log the failure.
-
-**Q: Google OAuth consent prevents automated use**
-
-* A: For testing, add the sending account as a test user. For production, you may need to submit the app for verification (may take weeks). Consider using domain-wide delegation in Workspace for internal apps.
-
-**Q: Calendars showing wrong timezones (UTC vs Cairo)**
-
-* A: Ensure ICS uses `DTSTART;TZID=Africa/Cairo:YYYYMMDDTHHMMSS` and include a `VTIMEZONE` block. When creating Google Calendar events through the API, set `start.timeZone` and `end.timeZone` to `Africa/Cairo`.
-
-**Q: Ollama is slow or memory-heavy**
-
-* A: Use the 1B Llama model as planned. Ensure your host has enough RAM. Consider running Ollama and n8n on separate machines.
-
-**Q: Spam emails still replied to**
-
-* A: Verify your classifier prompt and thresholds. Ensure `SPAM` and `OUT_OF_OFFICE` branches are explicitly configured to `logOnly` and skip `Send Email` node.
 
 ---
 
