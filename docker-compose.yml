@@ -6,19 +6,30 @@ services:
     container_name: n8n
     restart: unless-stopped
     ports:
-      - "5678:5678"
+      - "5678:5678" # n8n web UI
     environment:
-      # Base URL
+      # n8n Base
       N8N_HOST: "localhost"
       N8N_PORT: 5678
       N8N_PROTOCOL: "http"
+      
+      # Basic Auth for n8n UI
+      N8N_BASIC_AUTH_ACTIVE: "true"
+      N8N_BASIC_AUTH_USER: "admin"
+      N8N_BASIC_AUTH_PASSWORD: "changeme"
 
-      # IMPORTANT — keep timezone correct for Cairo
+      # SQLite DB for internal n8n persistence (no external DB needed)
+      DB_TYPE: "sqlite"
+      DB_SQLITE_DATABASE: "/home/node/.n8n/database.sqlite"
+
+      # Timezone for ICS, scheduling, logs
       GENERIC_TIMEZONE: "Africa/Cairo"
 
-      # Allow HTTP to call Ollama inside Docker network
+      # Allow n8n Function node to call Ollama locally
       NODE_FUNCTION_ALLOW_EXTERNAL: "ollama"
 
+      # Ollama URL for HTTP requests (adjust if container hostname or port changes)
+      OLLAMA_URL: "http://ollama:11434"
 
     volumes:
       - n8n_data:/home/node/.n8n
@@ -31,10 +42,11 @@ services:
     container_name: ollama
     restart: unless-stopped
     ports:
-      - "11434:11434"
+      - "11434:11434" # Ollama HTTP server port
     volumes:
       - ollama_models:/root/.ollama
 
 volumes:
   n8n_data:
   ollama_models:
+
