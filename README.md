@@ -123,7 +123,7 @@ Create and store these credentials securely (use a secrets manager or n8n creden
 
 ### 5.1 n8n Installation
 
-### 5.3 Ollama Installation & Model
+### 5.2 Ollama Installation & Model
 
 * Install Ollama using official instructions from the Ollama website for your OS.
 * Pull the model (example):
@@ -143,7 +143,7 @@ ollama run llama-3.2-1b --prompt "Hello" --json
 
 * n8n connects to Ollama via its local HTTP endpoint: run `ollama serve` and use `url=http://localhost:11434` (or your local host URL) for n8n to call.
 
-### 5.4 Google Workspace Setup (Gmail, Calendar, Sheets)
+### 5.3 Google Workspace Setup (Gmail, Calendar, Sheets)
 
 1. Create a Google Cloud Project.
 2. Enable APIs: Gmail API, Google Calendar API, Google Sheets API, Google Drive API (optional).
@@ -152,7 +152,7 @@ ollama run llama-3.2-1b --prompt "Hello" --json
 5. In n8n, create Google OAuth credentials using the Client ID and Client Secret. Test authentication and select scopes.
 6. For Gmail “send as” functionality, create the Gmail credential in n8n and test sending.
 
-### 5.6 Slack Setup
+### 5.4 Slack Setup
 
 * Create a Slack App in the workspace, add a bot user, and grant scopes (`chat:write`, `channels:read`).
 * Install to workspace and copy Bot token to n8n credentials.
